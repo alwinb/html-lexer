@@ -8,11 +8,16 @@
   },
   "keywords": [
     "html5",
+		"html",
     "lexer",
     "tokeniser",
     "tokenizer",
     "parser"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alwinb/html-lexer.git"
+  },
   "author": "Alwin Blok",
   "license": "MIT"
 }

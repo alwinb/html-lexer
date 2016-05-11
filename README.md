@@ -43,7 +43,7 @@ To incrementally tokenize a string whilst tracking the token positions:
 	var info = tokens.info()
 		, token = tokens.next()
 		
-	while (tok != null) {
+	while (token != null) {
 		console.log (info, token)
 		info = tokens.info()
 		token = tokens.next()
