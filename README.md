@@ -53,10 +53,9 @@ To incrementally tokenize a string whilst tracking the token positions:
 Token types
 -----------
 
-The tokens emitted are simple tuples `[type, chunck]`, or in some cases
-`[type, chunck, modifier]`, or `["error", message, position]` where position is
-the position in the input string at which the error occurs: an object
-`{ position, line, column }`. 
+The tokens emitted are simple tuples `[type, chunck]`, or
+`["error", message, position]` where position is the position in the input
+string at which the error occurs: an object `{ position, line, column }`. 
 
 The type of a token is just a string, and it is one of:
 
