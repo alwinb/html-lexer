@@ -1,0 +1,18 @@
+{
+  "name": "html-lexer",
+  "version": "0.1.0",
+  "description": "An HTML5 lexer",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "html5",
+    "lexer",
+    "tokeniser",
+    "tokenizer",
+    "parser"
+  ],
+  "author": "Alwin Blok",
+  "license": "MIT"
+}

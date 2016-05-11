@@ -1,0 +1,77 @@
+Personal notes on character references
+======================================
+
+From reading the specification, I have gathered the following. 
+There are three types of character references: decimal, hexadecimal and named. 
+In addition, each of those may either be terminated by a ';' or be nonterminated. 
+
+Decimal and Hexadecimal Character references
+--------------------------------------------
+
+decimal: 
+	/&#[0-9]+;/
+
+nonterminated decimal: 
+	/&#[0-9]+/
+
+hexadecimal: 
+	/&#[xX][0-9A-Fa-f]+;/
+
+nonterminated hexadecimal: 
+	/&#[xX][0-9A-Fa-f]+/
+
+* All nonterminated decimal and hexadecimal references produce a 'nonterminated' parse error. 
+* All decimal and hexadecimal references refer to a character, even in the presence of an error. 
+* Some (both terminated and nonterminated) produce a 'not in valid range' parse error,
+	by #number lookup table. If they do, IIRC they produce the unicode replacement character. 
+
+
+Named character references
+--------------------------
+
+Named references are more complicated. 
+The difficulty is illustrated by the following example in the spec. 
+
+>	"I'm &notit; I tell you" is parsed as "I'm ¬it; I tell you" (and this is a parse error). 
+>	"I'm &notin; I tell you" is parsed as "I'm ∉ I tell you" (and no parse error).
+
+I prefer to formalise this as follows, which should be equivalent to the spec. 
+Consider strings of the following format. 
+All the named entities in the (provided) table have one of these two formats. 
+Moreover, any nonterminated entry in the table, is also present with a terminating ';'. 
+
+named maybe-reference:
+	/&[A-Za-z0-9]+;/
+
+nonterminated named maybe-reference:
+	/&[A-Za-z0-9]+/
+
+
+According to the specification, these strings (call them lexemes) may be interpreted as one of:
+
+1. Data (a string of characters starting with &)
+2. A single character reference
+3. A character reference followed by data
+
+According to the following rules. 
+
+* Find the longest entry in the table which is a prefix of the lexeme. 
+	* If none is found, then the lexeme is parsed as data (1)
+		* If the lexeme is terminated then this is a parse error ('not an entity'),
+	* If it is exactly the lexeme, then it is parsed as a single reference (2). 
+		* If in addition the lexeme is not terminated then this is a parse error ('non terminated entity'). 
+	* If it is a prefix of the lexeme (this only happens when the lexeme is not terminated)
+		then it is parsed as a reference, a 'non-terminated entity' parse errror, and the remaining characters as data. 
+
+
+* * * 
+
+So, it's possible to preprocess the table, to extract
+1. the nonterminated entities
+2. the terminated entities that have one of the nonterminated entities as a prefix. 
+
+nonterminated named:
+	/yacute|ugrave|uacute|plusmn|otilde|oslash|ograve|oacute|ntilde|middot|iquest|igrave|iacute|frac34|frac14|frac12|egrave|eacute|divide|curren|ccedil|brvbar|atilde|agrave|aacute|Yacute|Ugrave|Uacute|Otilde|Oslash|Ograve|Oacute|Ntilde|Igrave|Iacute|Egrave|Eacute|Ccedil|Atilde|Agrave|Aacute|ucirc|times|thorn|szlig|raquo|pound|ocirc|micro|laquo|iexcl|icirc|ecirc|cedil|aring|aelig|acute|acirc|Ucirc|THORN|Ocirc|Icirc|Ecirc|Aring|Acirc|AElig|yuml|uuml|sup3|sup2|sup1|sect|quot|para|ouml|ordm|ordf|nbsp|macr|iuml|euml|copy|cent|auml|Uuml|QUOT|Ouml|Iuml|Euml|COPY|Auml|eth|deg|amp|yen|uml|shy|reg|not|REG|ETH|AMP|lt|gt|LT|GT/
+
+named:
+	/[A-Za-z0-9]+;/
