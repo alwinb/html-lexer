@@ -80,6 +80,7 @@ The type of a token is just a string, and it is one of:
 - finishTag
 - hexadecimalCharRef
 - namedCharRef
+- plaintext
 - rawtext
 - space
 - spaceMissing
@@ -102,14 +103,13 @@ Limitations
 A fair subset, but not all of the states in the specification is
 implemented. See notes/checklist.txt for more details. 
 
-* Doctype
+* Doctype  
 	The doctype states are not implemented. 
 	The lexer interprets doctypes as 'bogus comments'. 
 
-* CDATA and PLAINTEXT  
+* CDATA
 	The lexer interprets CDATA sections as 'bogus comments'. 
-	(CDATA is only allowed in foreign content - svg and mathml, 
-	and PLAINTEXT is only used in the deprecated plaintext tag.)
+	(CDATA is only allowed in foreign content - svg and mathml)
 
 * Script tags  
 	The lexer interprets script tags as rawtext elements.

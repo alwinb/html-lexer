@@ -46,6 +46,7 @@ var EOFSamples =
 , decimalCharRef: 'data &#1'
 , namedCharRef: 'data &name'
 , rawtext: 'eof in raw text <script> funct'
+, plaintext: 'eof in raw text <plaintext> asdf'
 , rawtextLessThanSign: 'eof in raw text less than sign <script> if (i<'
 , rawtextEndTagOpen: 'eof in raw text end tag open <script> asdf </'
 }
@@ -68,6 +69,7 @@ var weirdSamples =
 , invalidMD: '<!weird markup declaration>'
 , normalHtml: 'This is <span class = "s1">html</span> Yeah!'
 , autocloseAttempt: 'This is <span / attr >html</span> Yeah!'
+, closePlaintext: 'hi <plaintext>asd<as &ap, </plaintext> cannot be ended'
 , unescapedAmp: 'data & such'
 , unescapedAmpHash: 'data &# such'
 , unescapedAmpHashEx: 'data &#x such'

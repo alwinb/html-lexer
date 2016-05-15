@@ -55,12 +55,11 @@ CDATA, RCDATA, Script, RAWTEXT, PLAINTEXT
 [=] RCDATA end tag name
 
 [ ] CDATA section
-[ ] PLAINTEXT
+[*] PLAINTEXT
 
-CDATA and PLAINTEXT are not supported. 
+CDATA is not supported. 
 The lexer interprets CDATA sections as bogus comments. 
-(CDATA is only allowed in foreign content - svg and mathml, 
-and PLAINTEXT is only used in the deprecated plaintext tag.)
+(CDATA is only allowed in foreign content - svg and mathml.)
 
 
 DOCTYPE
