@@ -14,8 +14,8 @@ Tags and attributes
 [*] After attribute name
 [*] After attribute value (quoted)
 [*] Attribute name
-[*] Attribute value (double-quoted)
-[*] Attribute value (single-quoted)
+[=] Attribute value (double-quoted)
+[=] Attribute value (single-quoted)
 [*] Attribute value (unquoted)
 [*] Before attribute name
 [*] Before attribute value
@@ -31,13 +31,17 @@ Tags and attributes
 [*] Self-closing start tag
 [*] Tag name
 [*] Tag open
-[ ] Character reference in attribute value
+[=] Character reference in attribute value
 [=] Character reference in data
 [*] Comment end bang
 [*] Tokenizing character references
 
 [*] EOF branches
 [ ] NULL character branches
+
+The Attribute value (double-quoted) and Attribute value (single-quoted)
+are implemented via a bit of additional state that sotres the opening quote. 
+(e.g. single vs. double-quoted)
 
 
 CDATA, RCDATA, Script, RAWTEXT, PLAINTEXT
@@ -54,8 +58,8 @@ CDATA, RCDATA, Script, RAWTEXT, PLAINTEXT
 [=] RCDATA end tag open
 [=] RCDATA end tag name
 
-[ ] CDATA section
 [*] PLAINTEXT
+[ ] CDATA section
 
 CDATA is not supported. 
 The lexer interprets CDATA sections as bogus comments. 

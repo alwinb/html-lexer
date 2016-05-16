@@ -17,7 +17,8 @@ To tokenize an entire string at once
 
 	var TokenStream = require ('html-lexer')
 		, sample = '<span class="hello">Hello, world</span>'
-		console.log(new TokenStream(sample).all())
+	
+	console.log(new TokenStream(sample).all())
 
 
 To incrementally tokenize a string:
@@ -59,11 +60,10 @@ string at which the error occurs: an object `{ position, line, column }`.
 
 The type of a token is just a string, and it is one of:
 
+- attributeData
 - attributeName
-- attributeValueDoubleQuoted
 - attributeValueMissing
-- attributeValueSingleQuoted
-- attributeValueUnquoted
+- beginAttributeValue
 - beginBogusComment
 - beginComment
 - beginEndTag
@@ -74,18 +74,20 @@ The type of a token is just a string, and it is one of:
 - data
 - decimalCharRef
 - equals
+- finishAttributeValue
 - finishBogusComment
 - finishComment
 - finishSelfClosingTag
 - finishTag
 - hexadecimalCharRef
+- lessThanSign
 - namedCharRef
 - plaintext
 - rawtext
+- rcdata
 - space
 - spaceMissing
 - tagName
-- lessThanSign
 
 The `"bogusCharRef"` is emitted for sequences that start with an ampersand,
 but that *do not* start a character referece, specifically, one of `"&"`,
@@ -104,25 +106,21 @@ A fair subset, but not all of the states in the specification is
 implemented. See notes/checklist.txt for more details. 
 
 * Doctype  
-	The doctype states are not implemented. 
+	The doctype states are not implemented.  
 	The lexer interprets doctypes as 'bogus comments'. 
 
-* CDATA
-	The lexer interprets CDATA sections as 'bogus comments'. 
-	(CDATA is only allowed in foreign content - svg and mathml)
+* CDATA  
+	The lexer interprets CDATA sections as 'bogus comments'.  
+	(CDATA is only allowed in foreign content - svg and mathml.)
 
 * Script tags  
-	The lexer interprets script tags as rawtext elements.
+	The lexer interprets script tags as rawtext elements.  
 	(And I think this is correct.)
 
 * Character references  
 	The lexer only does a lexical analysis. This means that
 	character references are not interpreted.  
 	See notes/charrefs.txt for details. 
-
-* Character references in attribute values are not yet handled.
-	Attribute values are just lexed as a single token. 
-
 
 
 [1]: https://html.spec.whatwg.org/multipage/syntax.html#tokenization

@@ -53,25 +53,21 @@ According to the specification, these strings (call them lexemes) may be interpr
 2. A single character reference
 3. A character reference followed by data
 
-According to the following rules. 
-
-* Find the longest entry in the table which is a prefix of the lexeme. 
-	* If none is found, then the lexeme is parsed as data (1)
-		* If the lexeme is terminated then this is a parse error ('not an entity'),
-	* If it is exactly the lexeme, then it is parsed as a single reference (2). 
-		* If in addition the lexeme is not terminated then this is a parse error ('non terminated entity'). 
-	* If it is a prefix of the lexeme (this only happens when the lexeme is not terminated)
-		then it is parsed as a reference, a 'non-terminated entity' parse errror, and the remaining characters as data. 
-
-
 * * * 
 
-So, it's possible to preprocess the table, to extract
-1. the nonterminated entities
-2. the terminated entities that have one of the nonterminated entities as a prefix. 
+It possible to preprocess the table, to extract:
 
-nonterminated named:
-	/yacute|ugrave|uacute|plusmn|otilde|oslash|ograve|oacute|ntilde|middot|iquest|igrave|iacute|frac34|frac14|frac12|egrave|eacute|divide|curren|ccedil|brvbar|atilde|agrave|aacute|Yacute|Ugrave|Uacute|Otilde|Oslash|Ograve|Oacute|Ntilde|Igrave|Iacute|Egrave|Eacute|Ccedil|Atilde|Agrave|Aacute|ucirc|times|thorn|szlig|raquo|pound|ocirc|micro|laquo|iexcl|icirc|ecirc|cedil|aring|aelig|acute|acirc|Ucirc|THORN|Ocirc|Icirc|Ecirc|Aring|Acirc|AElig|yuml|uuml|sup3|sup2|sup1|sect|quot|para|ouml|ordm|ordf|nbsp|macr|iuml|euml|copy|cent|auml|Uuml|QUOT|Ouml|Iuml|Euml|COPY|Auml|eth|deg|amp|yen|uml|shy|reg|not|REG|ETH|AMP|lt|gt|LT|GT/
+1. The names that may occur without terminating semicolon
+2. Terminated names that one of the above as a prefix
 
-named:
-	/[A-Za-z0-9]+;/
+This is all the info we need to split references. 
+If 2 does not match and 1. does, then we can split. 
+
+This is fine in data, however, in attributes it is more complicated:
+
+
+>	If the character reference is being consumed as part of an attribute, and the last character matched is not a ";" (U+003B) character, and the next character is either a "=" (U+003D) character or an alphanumeric ASCII character, then, for historical reasons, all the characters that were matched after the U+0026 AMPERSAND character (&) must be unconsumed, and nothing is returned. However, if this next character is in fact a "=" (U+003D) character, then this is a parse error, because some legacy user agents will misinterpret the markup in those cases.
+
+
+
+
