@@ -17,7 +17,10 @@ var samples =
 , rcdata2: '<textarea> asdf & &amp; </textarea( and not ending> it'
 , rcdata3: '<textarea> asdf & &amp; </textarea/ and not ending> it'
 , rcdata4: '<textarea> asdf & &amp; </textarea and not ending> it'
-, rawtext: '<script> asdf &amp; <span> </script> and more'
+, rawtext: '<script> asdf &amp; <span> </scriptNot </script> and more'
+, rawtext2: '<script> asdf &amp; <span> </script( and not ending> it'
+, rawtext3: '<script> asdf &amp; <span> </script/ and not ending> it'
+, rawtext4: '<script> asdf &amp; <span> </script and not ending> it'
 , script: '<!doctype html>hello <script><!-- asdf</script> thus'
 }
 
@@ -99,6 +102,9 @@ var weirdSamples =
 , dangerousSlash1: '<span name=/ >asdf'
 , dangerousSlash2: '<span name=/>asdf'
 , missingValue: '<span name=>asdf'
+, invalidAttributeValue1: '<div class= =at >'
+, invalidAttributeValue2: '<div class= <at >'
+, invalidAttributeValue3: '<div class= `at >'
 }
 
 
