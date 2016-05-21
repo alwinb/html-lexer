@@ -62,7 +62,6 @@ The type of a token is just a string, and it is one of:
 
 - attributeData
 - attributeName
-- attributeValueMissing
 - beginAttributeValue
 - beginBogusComment
 - beginComment
@@ -73,6 +72,7 @@ The type of a token is just a string, and it is one of:
 - commentData
 - data
 - decimalCharRef
+- endTagPrefix
 - equals
 - finishAttributeValue
 - finishBogusComment
