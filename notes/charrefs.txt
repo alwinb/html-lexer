@@ -32,8 +32,8 @@ Named character references
 Named references are more complicated. 
 The difficulty is illustrated by the following example in the spec. 
 
->	"I'm &notit; I tell you" is parsed as "I'm ¬it; I tell you" (and this is a parse error). 
->	"I'm &notin; I tell you" is parsed as "I'm ∉ I tell you" (and no parse error).
+> "I'm &notit; I tell you" is parsed as "I'm ¬it; I tell you" (and this is a parse error). 
+> "I'm &notin; I tell you" is parsed as "I'm ∉ I tell you" (and no parse error).
 
 I prefer to formalise this as follows, which should be equivalent to the spec. 
 Consider strings of the following format. 
@@ -47,15 +47,24 @@ nonterminated named maybe-reference:
 	/&[A-Za-z0-9]+/
 
 
-According to the specification, these strings (call them lexemes) may be interpreted as one of:
+According to the specification, these strings may be interpreted as one of:
 
 1. Data (a string of characters starting with &)
 2. A single character reference
 3. A character reference followed by data
 
-* * * 
 
-It possible to preprocess the table, to extract:
+Two pass processing
+-------------------
+
+I think it is cluncky to require the full table of named character references for a lexical pass. 
+I would propose to instead have the tokenizer produce named-maybe-reference tokens as per the above, 
+and resolve them in a second pass. 
+
+The only thing that bothers me is the third case. In this case, I would like the lexer to produce two tokens,
+rather than have the resolution split the reference part from the data part.   
+
+It possible to preprocess the table of entities, to extract:
 
 1. The names that may occur without terminating semicolon
 2. Terminated names that one of the above as a prefix
@@ -63,10 +72,27 @@ It possible to preprocess the table, to extract:
 This is all the info we need to split references. 
 If 2 does not match and 1. does, then we can split. 
 
-This is fine in data, however, in attributes it is more complicated:
+Preprocessing them ('by hand', should check) gives the following:
 
+nonterminated named references:
+	/^&([AEIOUYaeiouy]?acute|[AEIOUaeiou](?:grave|circ|uml)|y?uml|[ANOano]tilde|[Aa]ring|[Oo]slash|[Cc]?cedil|brvbar|curren|divide|frac(?:12|14|34)|iquest|middot|plusmn|(?:AE|ae|sz)lig|[lr]aquo|iexcl|micro|pound|THORN|thorn|times|COPY|copy|cent|macr|nbsp|ord[fm]|para|QUOT|quot|sect|sup[123]|AMP|amp|ETH|eth|REG|reg|deg|not|shy|yen|GT|gt|LT|lt)/
 
->	If the character reference is being consumed as part of an attribute, and the last character matched is not a ";" (U+003B) character, and the next character is either a "=" (U+003D) character or an alphanumeric ASCII character, then, for historical reasons, all the characters that were matched after the U+0026 AMPERSAND character (&) must be unconsumed, and nothing is returned. However, if this next character is in fact a "=" (U+003D) character, then this is a parse error, because some legacy user agents will misinterpret the markup in those cases.
+terminated named references that have a nonterminated one as a prefix:
+	/^&(?:copysr|centerdot|divideontimes|[gl]t(?:quest|dot|cir|cc)|[gl]trPar|gtr(?:dot|less|eqqless|eqless|approx|arr|sim)|ltr(?:i|if|ie|mes)|ltlarr|lthree|notin(?:dot|E|v[abc])?|notni(?:v[abc])?|parallel|times(?:bar|d|b));/
+
+Using this, we can split references of case (3. A character reference followed by data)
+without a need for the full table. It is still not elegant, but better than requiring the full table. 
+
+Still, to do so it is necessary to remember the first symbol AFTER nonterminated named references in attributes:
+
+> If the character reference is being consumed as part of an attribute, and the
+> last character matched is not a ";" (U+003B) character, and the next character
+> is either a "=" (U+003D) character or an alphanumeric ASCII character, then, 
+> for historical reasons, all the characters that were matched after the 
+> U+0026 AMPERSAND character (&) must be unconsumed, and nothing is returned. 
+> However, if this next character is in fact a "=" (U+003D) character, then this
+> is a parse error, because some legacy user agents will misinterpret the markup
+> in those cases.
 
 
 
