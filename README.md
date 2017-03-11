@@ -1,4 +1,4 @@
-html-lexer
+html-lexer 
 ===========
 
 An HTML5 lexer. Converts the input string to a lazy stream of tokens according
@@ -62,7 +62,6 @@ The type of a token is just a string, and it is one of:
 
 - attributeData
 - attributeName
-- attributeValueMissing
 - beginAttributeValue
 - beginBogusComment
 - beginComment
@@ -73,6 +72,7 @@ The type of a token is just a string, and it is one of:
 - commentData
 - data
 - decimalCharRef
+- endTagPrefix
 - equals
 - finishAttributeValue
 - finishBogusComment
@@ -82,6 +82,7 @@ The type of a token is just a string, and it is one of:
 - hexadecimalCharRef
 - lessThanSign
 - namedCharRef
+- unresolvedNamedCharRef
 - plaintext
 - rawtext
 - rcdata
@@ -92,6 +93,10 @@ The type of a token is just a string, and it is one of:
 The `"bogusCharRef"` is emitted for sequences that start with an ampersand,
 but that *do not* start a character referece, specifically, one of `"&"`,
 `"&#"`, `"&#X"` or `"&#x"`. 
+
+The `"unresolvedNamedCharRef"` is emitted for named character references that are not known to
+the lexer. They may be valid and resolve to a character, or they may be unknown in which case they
+would be interpreted as data. See notes/charrefs.txt for details. 
 
 The `"space"` and `"spaceMissing"` are emitted for space between attributes in
 element tags. 
@@ -116,11 +121,6 @@ implemented. See notes/checklist.txt for more details.
 * Script tags  
 	The lexer interprets script tags as rawtext elements.  
 	(And I think this is correct.)
-
-* Character references  
-	The lexer only does a lexical analysis. This means that
-	character references are not interpreted.  
-	See notes/charrefs.txt for details. 
 
 
 [1]: https://html.spec.whatwg.org/multipage/syntax.html#tokenization
