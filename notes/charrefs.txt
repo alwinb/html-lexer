@@ -90,10 +90,4 @@ Still, to do so it is necessary to remember the first symbol AFTER nonterminated
 > is either a "=" (U+003D) character or an alphanumeric ASCII character, then, 
 > for historical reasons, all the characters that were matched after the 
 > U+0026 AMPERSAND character (&) must be unconsumed, and nothing is returned. 
-> However, if this next character is in fact a "=" (U+003D) character, then this
-> is a parse error, because some legacy user agents will misinterpret the markup
-> in those cases.
-
-
-
 

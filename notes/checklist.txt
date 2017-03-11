@@ -136,5 +136,15 @@ suggested in the specification, which is not very clean, nor clear.
 * hexDigits
 * namedCharRef
 
-Character references in attribute values are not (yet) implemented. 
+* * * 
 
+The specification has recently changed to include the followng states.
+
+[=] Character reference
+[=] Character reference end
+[=] Decimal character reference start
+[=] Decimal character reference
+[=] Hexademical character reference start
+[=] Hexademical character reference
+[=] Numeric character reference
+[=] Numeric character reference end
