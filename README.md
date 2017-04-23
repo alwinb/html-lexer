@@ -1,24 +1,33 @@
-html-lexer 
-===========
+An HTML5 lexer for safe template languages
+==========================================
 
-An HTML5 lexer. Converts the input string to a lazy stream of tokens according
-to the [HTML5 specification][1]. The produced tokens however are simply
-tuples (arrays) `[type, chunck]` of a token type and a chunck of the input
-string. All formatting– and other idiosyncracies of the input are maintained. 
+This is an HTML5 lexer designed to be used a basis for safe and HTML-context 
+aware template languages, IDEs or syntax highlighters. It is different from the 
+other available tokenizers in that it preserves all the information of the 
+input string, e.g. formatting, quotation style and other idiosyncrasies. It 
+does so by producing annotated chunks of the input string rather than the 
+slightly more high level tokens that are described in the specification. 
+However, it does so however in a manner that is compatible with the language 
+defined in the [HTML5 specification][1]. 
 
-Inspired by [simple-html-tokenizer][2], but I needed the low level output and
-ended up writing my own lexer instead. 
-
+The main motivation for this project is a complete absence of safe HTML 
+template languages. By safe, I mean that the template placeholders are typed 
+according to their context, and that the template engine ensures that the 
+strings that come to fill the placeholders are correctly escaped and will yield 
+valid HTML. 
 
 Usage
 -----
+
+The produced tokens are simply tuples (arrays) `[type, chunk]` of a token type
+and a chunk of the input string.
 
 To tokenize an entire string at once
 
 	var TokenStream = require ('html-lexer')
 		, sample = '<span class="hello">Hello, world</span>'
 	
-	console.log(new TokenStream(sample).all())
+	console.log(new TokenStream(sample).toArray())
 
 
 To incrementally tokenize a string:
@@ -54,7 +63,7 @@ To incrementally tokenize a string whilst tracking the token positions:
 Token types
 -----------
 
-The tokens emitted are simple tuples `[type, chunck]`, or
+The tokens emitted are simple tuples `[type, chunk]`, or
 `["error", message, position]` where position is the position in the input
 string at which the error occurs: an object `{ position, line, column }`. 
 
@@ -91,7 +100,7 @@ The type of a token is just a string, and it is one of:
 - tagName
 
 The `"bogusCharRef"` is emitted for sequences that start with an ampersand,
-but that *do not* start a character referece, specifically, one of `"&"`,
+but that *do not* start a character reference, specifically, one of `"&"`,
 `"&#"`, `"&#X"` or `"&#x"`. 
 
 The `"unresolvedNamedCharRef"` is emitted for named character references that are not known to
