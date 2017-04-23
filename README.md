@@ -16,7 +16,6 @@ according to their context, and that the template engine ensures that the
 strings that come to fill the placeholders are correctly escaped and will yield 
 valid HTML. 
 
-
 Usage
 -----
 
