@@ -6,7 +6,7 @@ function test (title, samples) {
 	console.log('Test '+title+'\n'+new Array(title.length+6).join('=')+'\n')
 	for (var a in samples) {
 		console.log(samples[a])
-		console.log(new Lexer(samples[a]).all())
+		console.log(new Lexer(samples[a]).toArray())
 		console.log('\n')
 	}
 }
