@@ -2,11 +2,13 @@ var Lexer = require('../lib')
 	, Samples = require('./data/html')
 
 
+var L = new Lexer ()
+
 function test (title, samples) {
 	console.log('Test '+title+'\n'+new Array(title.length+6).join('=')+'\n')
 	for (var a in samples) {
 		console.log(samples[a])
-		console.log(new Lexer(samples[a]).toArray())
+		console.log(L.toArray(samples[a]))
 		console.log('\n')
 	}
 }
