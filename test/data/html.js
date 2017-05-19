@@ -2,6 +2,7 @@
 var samples = 
 { namedCharRefInData: 'char ref in &amp; data'
 , nonTerminatedNamedCharRefInData: 'char ref in &amp data'
+, nonTerminatedNamedCharRefInData2: 'char ref in &ampa data'
 , hexadecimalCharRefInData: 'hexadecimal ref &#xccc; in data'
 , nonTerminatedHexadecimalCharRefInData: 'hexadecimal ref &#xccc in data'
 , decimalCharRefInData: 'decimal ref &#1092; in data'
