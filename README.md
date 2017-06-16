@@ -1,6 +1,10 @@
 An HTML5 lexer for safe template languages
 ==========================================
 
+[![Dependencies][deps-image]][deps-url] 
+[![devDependencies][dev-deps-image]][dev-deps-url] 
+[![NPM version][npm-image]][npm-url] 
+
 This is an HTML5 lexer designed to be used a basis for safe and HTML-context 
 aware template languages, IDEs or syntax highlighters. It is different from the 
 other available tokenizers in that it preserves all the information of the 
@@ -132,4 +136,10 @@ implemented. See notes/checklist.txt for more details.
 	(And I think this is correct.)
 
 
-[1]: https://html.spec.whatwg.org/multipage/syntax.html#tokenization
+[1]:              https://html.spec.whatwg.org/multipage/syntax.html#tokenization
+[npm-image]:      https://img.shields.io/npm/v/html-lexer.svg
+[npm-url]:        https://npmjs.org/package/html-lexer
+[deps-image]:     https://img.shields.io/david/alwinb/html-lexer.svg
+[deps-url]:       https://david-dm.org/alwinb/html-lexer
+[dev-deps-image]: https://img.shields.io/david/dev/alwinb/html-lexer.svg
+[dev-deps-url]:   https://david-dm.org/alwinb/html-lexer?type=dev
