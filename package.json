@@ -1,6 +1,6 @@
 {
   "name": "html-lexer",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "An HTML5 lexer",
   "main": "lib/index.js",
   "scripts": {
