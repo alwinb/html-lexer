@@ -1,30 +1,37 @@
-var walk = require ('./walk')
+const walk = require ('./walk')
 module.exports =  { tag, leaf, end, comment, render }
 
-// Prelude
+// This is what I call 'tagscript', it is a cousin to 'hyperscript' that,
+// ather than exposing a single 'h' function to create element trees,
+// it exposes start tag/ end tag functions to create html on the token level. 
+// Only, just using it in the tests, so far. 
 
-var log = console.log.bind (console)
+// Prelude
+// -------
+
+const log = console.log.bind (console)
 
 function compose (fn1, fn2, fn3, __) { 
-  var fns = arguments
+  const fns = arguments
   return function (x) {
-    for (var i=fns.length-1; i>=0; i--) x = fns[i](x)
+    for (let i=fns.length-1; i>=0; i--) x = fns[i](x)
     return x } }
 
-
 // 'Tagscript' renderer
-// TODO: add content maps, support for rawtext and rcdata??
-// and perhaps value attributes?
+// --------------------
+// TODO: add content maps, support for rawtext and void elements??
+// or perhaps value attributes/  vnodes in place of rawtext/ rcdata elements?
 
 function render (tag) {
   return tag instanceof Tag ? renderTag (tag)
-    : tag instanceof Raw ? tag.value
     : renderData (tag)
 }
 
-// Raw token data types
 
-var START = 'start'
+// Data types for tags
+// -------------------
+
+const START = 'start'
   , END = 'end'
   , LEAF = 'leaf'
   , COMMENT = 'comment'
@@ -41,11 +48,12 @@ function Comment (data) {
 }
 
 
-// Token builders
+// Tag builders
 // Strings that do not match `ATTRNAME` cannot be attribute names
 // and they cannot be escaped either, so I ignore them. 
+// TODO make the distinction between void tags and self-closing tags
 
-var TAGNAME = /^[a-zA-Z][^>/\t\n\f ]*$/
+const TAGNAME = /^[a-zA-Z][^>/\t\n\f ]*$/
 
 function tag (name, attrs) {
   if (! TAGNAME.test (name))
@@ -69,11 +77,13 @@ function comment (data) {
   return new Comment (data)
 }
 
-////////////
+
+// Serialize
+// ---------
 
 function renderTag (tag) {
-  var { tag, tagName, attributes:atts, value } = tag
-  switch (tag) {
+  const { tagName, attributes:atts, value } = tag
+  switch (tag.tag) {
     case LEAF:    return ['<'+tagName, renderAttributes (atts), '/>'].join('')
     case END:     return ['</'+tagName, '>'].join ('')
     case COMMENT: return ['<!--', value, '-->'].join ('') // FIXME escape comment value
@@ -81,89 +91,45 @@ function renderTag (tag) {
   }
 }
 
-// Converting tokens to strings
-// ============================
-// Copied from html-braces
-
-
-// Render primitives
-// -----------------
-// Raw html data that results from evaluating templates
-// (and subtemplates) is wrapped in a `Raw` object. 
-
-function Raw (string) {
-	this.content = string }
-
-Raw.prototype.toString = function () {
-	return this.content
-}
-
-// `AMPLT`, `AMPQ` and `escapeChar` are used for escaping 
-// html-data, rcdata and attrbute values
-
-var AMPLT = /[&<]/g
-var AMPQ = /[&"]/g
+const AMPLT = /[&<]/g
+const AMPQ = /[&"]/g
+const ATTRNAME = /^[^\t\n\f />][^\t\n\f /=>]*$/
 
 function escapeChar (c) {
-	return c === '&' ? '&amp;'
-	: c === '<' ? '&lt;'
-	: c === '"' ? '&quot;' : c }
+  return c === '&' ? '&amp;'
+  : c === '<' ? '&lt;'
+  : c === '"' ? '&quot;' : c }
 
 // The `renderData` function is called for every
-// placeholder `Tag` in an 'html-data' context. It escapes all 
-// strings _except_ the strings wrapped in a `Raw` object. 
+// placeholder `Tag` in an 'html-data' context. 
 
 function renderData (value) {
-	return (value instanceof Raw)
-		? value.content
-		: String (value) .replace (AMPLT, escapeChar)
+  return String (value) .replace (AMPLT, escapeChar)
 }
-
-// The `renderRcData` function is called for every `Tag` in
-// 'rcdata' contexts. i.e. in `<textarea>` and `<title>` elements.
-// It escapes all strings, _and_ the contents of `Raw` objects. 
-
-/* NOTE: even though everyting is escaped, this is not safe unless
-// the surrounding rcdata is escaped properly too. 
-// Example: <textarea> Hi there </text{{ foo }}</textarea>
-// with foo expanding to 'area ' will cause trouble. */
-
-function renderRcData (value) {
-	return String (value) .replace (AMPLT, escapeChar)
-}
-
-// The `renderAttributeValue` function takes a javascript value and
-// returns a safe (escaped) string of html to be used as an
-// html attribute value. 
 
 function renderRawText (value) {
   // TODO
-	// Idea: For 'escaping' ending sequneces in user visible tags,
-	// insert an additional '\u200b' (8203) zero-width space character
-	// after the tagName. 
-	// However, for script tags, we want to use something else,
-	// and probably for other things such as iframes etc too. 
+  // Idea: For 'escaping' ending sequneces in user visible tags,
+  // insert an additional '\u200b' (8203) zero-width space character
+  // after the tagName. 
+  // However, for script tags, we want to use something else,
+  // and probably for other things such as iframes etc too. 
+  // Maybe this should just throw for now? Or return empty?
 }
 
-// The `renderAttributes` function takes a javascript value and 
-// returns safe html to be used as one or more attributes and/or
-// attribute-value pairs.
-//
 // Strings that do not match `ATTRNAME` cannot be attribute names
 // and they cannot be escaped either, so we ignore them (see below)
 
-var ATTRNAME = /^[^\t\n\f />][^\t\n\f /=>]*$/
-
 function renderAttributes (arg) {
-  var r = ['']
-	if (arg != null && typeof arg === 'object')
-  for (var k in arg)
-	if (arg[k] != null && typeof arg[k] !== 'function' && ATTRNAME.test(k)) {
-		var v = String (arg[k])
-		if (v === '') r.push (k)
-		else r.push ([k, '="', String (v) .replace (AMPQ, escapeChar), '"'].join(''))
+  const r = ['']
+  if (arg != null && typeof arg === 'object')
+  for (let k in arg)
+  if (arg[k] != null && typeof arg[k] !== 'function' && ATTRNAME.test(k)) {
+    let v = String (arg[k])
+    if (v === '') r.push (k)
+    else r.push ([k, '="', String (v) .replace (AMPQ, escapeChar), '"'].join(''))
   }
 
-	return r.join(' ')
+  return r.join(' ')
 }
 

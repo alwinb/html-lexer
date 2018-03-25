@@ -1,7 +1,10 @@
-var log = console.log.bind (console)
+// This is a parameterizable tree walker for arbitrary javascript objects
+// Only, just using it in the tests, so far. 
+
+const log = console.log.bind (console)
 module.exports = walk
 
-var NUMBER = 'number'
+const NUMBER = 'number'
   , STRING = 'string'
   , OBJECT = 'object'
   , FUNCTION = 'function'
@@ -15,48 +18,47 @@ walk.shape = defaultShape
 walk.leaf = function (obj) { return new Leaf (obj) }
 
 function Walker (obj, shape) {
-	var stack = [ defaultShape ({'#root': obj}) ] // careful 
-  var self = this
+  const stack = [ defaultShape ({'#root': obj}) ] // careful 
+  const self = this
 
   this.done = false
   this.value
-	this.next = next
+  this.next = next
   this[Symbol.iterator] = _ => self
 
-	// where
-	function next () {
-		var head = stack [stack.length - 1]
+  // where
+  function next () {
+    const head = stack [stack.length - 1]
 
     if (head.done) {
-		  if (stack.length > 1) {
-			  stack.pop ()
-			  var k = stack [stack.length - 1] .selection
-		    stack [stack.length - 1] .increment ()
-			  self.value = { tag:'end', type:head.type, key:k } //, head.node]
-		  }
-		  else 
+      if (stack.length > 1) {
+        stack.pop ()
+        const k = stack [stack.length - 1] .selection
+        stack [stack.length - 1] .increment ()
+        self.value = { tag:'end', type:head.type, key:k } //, head.node]
+      }
+      else 
         self.done = true
     }
 
-		else {
-      var child = shape (head.child, stack)
+    else {
+      const child = shape (head.child, stack)
       if (child instanceof Leaf) {
-  			self.value = { tag:'leaf', type:child.type, key:head.selection, value:child.value }
+        self.value = { tag:'leaf', type:child.type, key:head.selection, value:child.value }
         head.increment ()
       }
       else {
         self.value = { tag:'start', type:child.type, key:head.selection } //, child.node]
-			  stack.push (child)
+        stack.push (child)
       }
-		}
+    }
 
     return self
-	}
+  }
 }
 
 // 'Shapes' are basically lateral iterators,
-// calling 'increment' updates their 'child' value 
-// to the next sibling. 
+// calling 'increment' moves their 'child selection' to the right by one. 
 
 function defaultShape (obj) {
   return obj == null ? new Leaf (obj)
@@ -73,12 +75,12 @@ function Leaf (obj) {
 }
 
 function IteratorShape (obj) {
-  var index = -1
-  var obj = obj[Symbol.iterator]()
+  let index = -1
+  obj = obj[Symbol.iterator]()
   this.type = 'iterator'
 
   this.increment = function () {
-    var n = obj.next ()
+    let n = obj.next ()
     index += 1
     this.selection = index
     this.done = n.done
@@ -90,7 +92,7 @@ function IteratorShape (obj) {
 }
 
 function ArrayShape (obj) {
-  var index = -1
+  let index = -1
   this.type = 'array'
   this.increment = function () { 
     index += 1
@@ -103,10 +105,10 @@ function ArrayShape (obj) {
 }
 
 function ObjectShape (obj) {
-  var index = -1
-	var keys = Object.keys (obj)
+  let index = -1
+  const keys = Object.keys (obj)
   this.type = 'object'
-	this.increment = function () { 
+  this.increment = function () { 
     index += 1
     this.selection = keys [index]
     this.done = index >= keys.length
