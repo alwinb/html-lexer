@@ -1,23 +1,22 @@
 "use strict"
 
-const walk = require ('./walk')
-  , { tag, end, render } = require ('./tagscript')
+const { tag, end, renderTo } = require ('tagscript')
+const log = console.log.bind (console)
+module.exports = { head, renderTokens, flush }
 
-module.exports = { head, renderTokens, flush, flatten }
 
-
-function head (contents)  {
+function head (cssfile) { return function (contents)  {
   const header = 
     [ tag ('html')
     ,   tag ('head')
-    ,     stylesheet ('file://'+__dirname+'/style/tokens.css')
+    ,     stylesheet (cssfile)
     ,   end ('head')
     ,   tag ('body')
     ,     contents
     ,   end ('body')
     , end ('html') ]
   return header
-}
+} }
 
 function stylesheet (href) {
   return tag ('link', { rel:'stylesheet', type:'text/css', href:href })
@@ -34,10 +33,6 @@ function renderTokens (tokens) {
 }
 
 
-//
-const log = console.log.bind (console)
-
-
 function map (fn) { return function* (obj) {
   for (let a of obj) yield fn (a)
 } }
@@ -45,27 +40,10 @@ function map (fn) { return function* (obj) {
 
 function flush (obj) {
   try {
-    for (let a of obj)
-      process.stdout.write (render (a))
+    renderTo (process.stdout, obj)
     process.exit (205)
   }
   catch (e) {
     log (e)
   }
 }
-
-
-function* flatten (obj) {
-  for (let a of (walk (obj, iterables)))
-    if (a.tag === 'leaf') yield a.value
-}
-
-function iterables (obj) {
-  return obj == null ? walk.leaf (obj)
-    : typeof obj[Symbol.iterator] === 'function' ? walk.shape (obj)
-    : obj instanceof Array ? walk.shape (obj)
-    : walk.leaf (obj)
-}
-
-
-

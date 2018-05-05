@@ -8,7 +8,8 @@
   },
   "keywords": [
     "html5",
-		"html",
+    "compliant",
+    "html",
     "lexer",
     "tokeniser",
     "tokenizer",
@@ -17,6 +18,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/alwinb/html-lexer.git"
+  },
+  "devDependencies": {
+    "tagscript": "^0.2.0"
   },
   "author": "Alwin Blok",
   "license": "MIT"

@@ -1,7 +1,7 @@
 "use strict"
 const Lexer = require ('../lib')
 	, Samples = require ('./data/html')
-  , { head, renderTokens, flush, flatten } = require ('./templates')
+  , { head, renderTokens, flush } = require ('./templates')
 
 
 const log = console.log.bind (console)
@@ -21,9 +21,9 @@ function map (fn) { return function* (obj) {
 // Test
 // ====
 
+const samples = Samples.samples.concat (Samples.EOFSamples)
 
-compose (flush, flatten, head, map (renderTokens), map (map (_ => [_[0], _[2]])), map (tokenize)) (Samples.samples.concat(Samples.EOFSamples))
-
+compose (flush, head ('file://'+__dirname+'/style/tokens.css'), map (renderTokens), map (map (_ => [_[0], _[2]])), map (tokenize)) (samples)
 
 function tokenize (sample) {
   const r = []
