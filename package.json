@@ -20,8 +20,9 @@
     "url": "https://github.com/alwinb/html-lexer.git"
   },
   "devDependencies": {
-    "tagscript": "^0.2.0"
+    "tagscript": "^0.3.0"
   },
   "author": "Alwin Blok",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {}
 }

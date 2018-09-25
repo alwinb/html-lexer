@@ -86,13 +86,10 @@ pre, code {
 }
 
 
+.legacyCharRef.attributeValue,
 .namedCharRef.attributeValue,
-.namedMaybeCharRef.attributeValue,
 .decimalCharRef.attributeValue,
 .hexadecimalCharRef.attributeValue,
-.namedMaybeCharRef.attributeValueDoubleQuoted,
-.namedMaybeCharRef.attributeValueSingleQuoted,
-.namedMaybeCharRef.attributeValueUnQuoted,
 .namedCharRef.attributeValueDoubleQuoted,
 .decimalCharRef.attributeValueDoubleQuoted,
 .hexadecimalCharRef.attributeValueDoubleQuoted,
@@ -125,19 +122,20 @@ pre, code {
 
 .legacyCharRef,
 .namedCharRef,
-.namedMaybeCharRef,
-.maybeNamedCharRef,
 .decimalCharRef,
 .hexadecimalCharRef {
 	color:#E9784F;
 }
 
-/*.bogusEndTag,*/
 .lessThanSign,
 .bogusCharRef,
 .unescapedAmpersand,
 .unescapedLessThan {
 	background:#60315A;
+}
+
+.endTagPrefix {
+  text-decoration:underline;
 }
 
 
@@ -146,8 +144,3 @@ pre, code {
 .true,.false,.null,.value,.number { color:#CF6A4C }
 .comment { color: #746D74 }
 .constructor { color: #B095AE }
-
-
-.endTagPrefix {
-  text-decoration:underline;
-}

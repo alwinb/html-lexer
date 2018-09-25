@@ -1,56 +1,51 @@
-"use strict"
 const Lexer = require ('../lib')
-	, Samples = require ('./data/html')
-  , { tag, end, renderTo } = require ('tagscript')
-  , { head, flush } = require ('./templates')
 
+const delegate = {
+  write: (token) => console.log (token),
+  end: () => console.log('\n')
+}
 
-const log = console.log.bind (console)
+{
+  const lexer = new Lexer (delegate)
+  lexer.write ('<h1>Hello, World</h1>')
+  lexer.end ()
+}
 
-function compose (fn1, fn2, fn3, __) {
-  var fns = arguments
-  return function (x) {
-    for (let i = fns.length - 1; i >= 0; i--) x = fns [i] (x)
-    return x } }
+{
+  const lexer = new Lexer (delegate)
+  lexer.write ('<h')
+  lexer.write ('1>Hello, W')
+  lexer.write ('orld</h1>')
+  lexer.end ()
+}
 
+{
+  // OK this works, but it is not accurate;
+  // this queries the lexer state; not the token boundaries. 
 
-function map (fn) { return function* (obj) {
-  for (let a of obj) yield fn (a) } }
+  let lexer
+  const delegate = {
+    write: (token) => console.log (token, lexer.position),
+    end: () => null
+  }
 
-
-function renderTokens (tokens) {
-  const pre = 
-    [ tag ('pre') //, samples[a], leaf ('br'), '\n'
-    ,   map (token => 
-          [ tag ('span', { class:token[0], title:token[0] }), token[1], end('span') ])
-        (tokens)
-    , end ('pre') ]
-  return pre
+  lexer = new Lexer (delegate)
+  lexer.write ('<h1>Hello, World</h1>')
+  lexer.end ()
 }
 
 
-// Test
-// ====
-
-const samples = Samples.samples.concat (Samples.EOFSamples)
-
-compose (flush, head ('file://'+__dirname+'/style/tokens.css?'+Math.random()), map (renderTokens), map (map (_ => [_[0], _[1]])), map (tokenize)) (samples)
-
-function tokenize (sample) {
-  const r = []
-  const p = new Lexer ({write:r.push.bind (r)})
-  p.write (sample)
-  return r
+{
+  const lexer = new Lexer (delegate)
+  lexer.write ('<!doctype html>sp')
+  lexer.write ('<sp')
+  lexer.write ('an>Hi</span>')
+  lexer.write ('&amp; &a')
+  lexer.write ('mp')
+  lexer.write (';I am &notit ok')
+  lexer.write ('\nI said: I am &not')
+  lexer.end ('<!asd')
 }
 
-function test (title, samples) {
-	log ('Test '+title+'\n'+new Array (title.length+6) .join('=')+'\n')
-	for (let a in samples) {
-		log (samples [a])
-		log (tokenize (samples[a]))
-		log ('\n')
-	}
-}
 
-//test ('samples', Samples.samples)
-//test ('EOF samples', Samples.EOFSamples)
+
