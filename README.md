@@ -5,6 +5,15 @@ An HTML5 lexer for safe template languages
 [![devDependencies][dev-deps-image]][dev-deps-url] 
 [![NPM version][npm-image]][npm-url] 
 
+[npm-image]:      https://img.shields.io/npm/v/html-lexer.svg
+[npm-url]:        https://npmjs.org/package/html-lexer
+[deps-image]:     https://img.shields.io/david/alwinb/html-lexer.svg
+[deps-url]:       https://david-dm.org/alwinb/html-lexer
+[dev-deps-image]: https://img.shields.io/david/dev/alwinb/html-lexer.svg
+[dev-deps-url]:   https://david-dm.org/alwinb/html-lexer?type=dev
+
+A standard compliant, incremental/ streaming HTML5 lexer. 
+
 This is an HTML5 lexer designed to be used a basis for safe and HTML-context 
 aware template languages, IDEs or syntax highlighters. It is different from the 
 other available tokenizers in that it preserves all the information of the 
@@ -14,11 +23,13 @@ slightly more high level tokens that are described in the specification.
 However, it does do so in a manner that is compatible with the language defined
 in the [HTML5 specification][1]. 
 
-The main motivation for this project is a complete absence of safe HTML 
+[1]: https://html.spec.whatwg.org/multipage/syntax.html#tokenization
+
+The main motivation for this project is a jarring absence of safe HTML 
 template languages. By safe, I mean that the template placeholders are typed 
 according to their context, and that the template engine ensures that the 
-strings that come to fill the placeholders are correctly escaped and will yield 
-valid HTML. 
+strings that come to fill the placeholders are automatically and
+correctly escaped to yield valid HTML. 
 
 Usage
 -----
@@ -26,92 +37,91 @@ Usage
 The produced tokens are simply tuples (arrays) `[type, chunk]` of a token type
 and a chunk of the input string.
 
-To tokenize an entire string at once
+The lexer has a 'push parser' API. 
+The `Lexer` constructor takes as its single argument a delegate object with 
+methods: `write (token)` and `end ()`. 
 
-	var TokenStream = require ('html-lexer')
-		, sample = '<span class="hello">Hello, world</span>'
-	
-	console.log(new TokenStream(sample).toArray())
+Example:
 
+```javascript
+const Lexer = require ('html-lexer')
 
-To incrementally tokenize a string:
+const delegate = {
+  write: (token) => console.log (token),
+  end: () => null
+}
 
-	var TokenStream = require ('html-lexer')
-		, sample = '<span class="hello">Hello, world</span>'
-		, tokens = new TokenStream(sample)
-		
-	var token = tokens.next()
-	while (token != null) {
-		console.log (token)
-		// do something with token
-		token = tokens.next()
-	}
+const lexer = new Lexer (delegate)
+lexer.write ('<h1>Hello, World</h1>')
+lexer.end ()
+```
 
+Results in:
+```
+[ 'data', '' ]
+[ 'beginStartTag', '<' ]
+[ 'tagName', 'h1' ]
+[ 'finishTag', '>' ]
+[ 'data', 'Hello, World' ]
+[ 'beginEndTag', '</' ]
+[ 'tagName', 'h1' ]
+[ 'finishTag', '>' ]
+```
 
-To incrementally tokenize a string whilst tracking the token positions:
+The lexer is incremental: `delegate.write` will be called as soon as a token is available
+and you can split the input across multiple writes:
 
-	var TokenStream = require ('html-lexer')
-		, sample = '<span class="hello">Hello, world</span>'
-		, tokens = new TokenStream(sample)
-		
-	var info = tokens.info()
-		, token = tokens.next()
-		
-	while (token != null) {
-		console.log (info, token)
-		info = tokens.info()
-		token = tokens.next()
-	}
+```javascript
+const lexer = new Lexer (delegate)
+lexer.write ('<h')
+lexer.write ('1>Hello, W')
+lexer.write ('orld</h1>')
+lexer.end ()
+```
 
 
 Token types
 -----------
 
 The tokens emitted are simple tuples `[type, chunk]`, or
-`["error", message, position]` where position is the position in the input
-string at which the error occurs: an object `{ position, line, column }`. 
+`[type, chunk, info]`. 
 
 The type of a token is just a string, and it is one of:
 
-- attributeData
-- attributeName
-- beginAttributeValue
-- beginBogusComment
-- beginComment
-- beginEndTag
-- beginStartTag
-- bogusCharRef
-- bogusCommentData
-- commentData
-- data
-- decimalCharRef
-- endTagPrefix
-- equals
-- finishAttributeValue
-- finishBogusComment
-- finishComment
-- finishSelfClosingTag
-- finishTag
-- hexadecimalCharRef
-- lessThanSign
-- namedCharRef
-- unresolvedNamedCharRef
-- plaintext
-- rawtext
-- rcdata
-- space
-- spaceMissing
-- tagName
+- `attributeAssign`
+- `attributeData`
+- `attributeName`
+- `beginAttributeValue`
+- `beginBogusComment`
+- `beginComment`
+- `beginEndTag`
+- `beginStartTag`
+- `bogusCharRef`
+- `bogusCommentData`
+- `commentData`
+- `data`
+- `decimalCharRef`
+- `endTagPrefix`
+- `finishAttributeValue`
+- `finishBogusComment`
+- `finishComment`
+- `finishSelfClosingTag`
+- `finishTag`
+- `hexadecimalCharRef`
+- `legacyCharRef`
+- `lessThanSign`
+- `namedCharRef`
+- `plaintext`
+- `rawtext`
+- `rcdata`
+- `space`
+- `tagName`
 
-The `"bogusCharRef"` is emitted for sequences that start with an ampersand,
+The `bogusCharRef` is emitted for sequences that start with an ampersand,
 but that *do not* start a character reference, specifically, one of `"&"`,
 `"&#"`, `"&#X"` or `"&#x"`. 
 
-The `"unresolvedNamedCharRef"` is emitted for named character references that are not known to
-the lexer. They may be valid and resolve to a character, or they may be unknown in which case they
-would be interpreted as data. See notes/charrefs.txt for details. 
-
-The `"space"` and `"spaceMissing"` are emitted for space between attributes in
+The `space` is emitted for 'space' between attributes in
 element tags. 
 
 Otherwise the names should be self explanatory.
@@ -120,26 +130,22 @@ Otherwise the names should be self explanatory.
 Limitations
 -----------
 
-A fair subset, but not all of the states in the specification is
-implemented. See notes/checklist.txt for more details. 
-
 * Doctype  
-	The doctype states are not implemented.  
-	The lexer interprets doctypes as 'bogus comments'. 
+  The doctype states are not implemented.  
+  The lexer interprets doctypes as 'bogus comments'. 
 
 * CDATA  
-	The lexer interprets CDATA sections as 'bogus comments'.  
-	(CDATA is only allowed in foreign content - svg and mathml.)
+  The lexer interprets CDATA sections as 'bogus comments'.  
+  (CDATA is only allowed in foreign content - svg and mathml.)
 
 * Script tags  
-	The lexer interprets script tags as rawtext elements.  
-	(And I think this is correct.)
+  The lexer interprets script tags as rawtext elements. 
+  This has no dire consequences, other than that html begin and 
+  end comment tags that may surround it, are not marked as such. 
 
 
-[1]:              https://html.spec.whatwg.org/multipage/syntax.html#tokenization
-[npm-image]:      https://img.shields.io/npm/v/html-lexer.svg
-[npm-url]:        https://npmjs.org/package/html-lexer
-[deps-image]:     https://img.shields.io/david/alwinb/html-lexer.svg
-[deps-url]:       https://david-dm.org/alwinb/html-lexer
-[dev-deps-image]: https://img.shields.io/david/dev/alwinb/html-lexer.svg
-[dev-deps-url]:   https://david-dm.org/alwinb/html-lexer?type=dev
+
+License
+-------
+
+MIT. Go for it. 

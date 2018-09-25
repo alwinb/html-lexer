@@ -1,0 +1,146 @@
+html, body {
+	color:white;
+	background:#202020;
+	font-family:Helvetica, Arial, Sans;
+}
+
+pre, code { 
+	font-family:Menlo, Monaco, Monospace;
+	font-size:12px;
+	line-height:16px;
+	tab-size:2;
+	padding:1px 4px;
+	margin:0 0 16px 0;
+}
+
+.error {
+	display:inline-block;
+	width:0;
+	padding-left:20px;
+	margin-left:-10px;
+	overflow:hidden;
+	position:absolute;
+	z-index:100;
+	border-bottom: 1px dotted red;
+	margin-top:-1px;
+}
+
+.error:hover {
+	padding:1px 4px;
+	margin-top:-1px;
+	border:none;
+	width:auto;
+	overflow:none;
+	background-color:red;
+}
+
+/* template colors */
+
+.beginTemplateComment,
+.finishTemplateComment,
+.emptyComment,
+.commentData,
+.space {
+	color:#746D74;
+}
+
+.symbol, .name {
+	color:#7587A6;
+}
+
+.finishTemplateTag,
+.beginTemplateTag,
+.beginTemplateOpenTag,
+.beginTemplateCloseTag {
+	background:#333;
+	color:#B095AE;
+}
+
+.attributeValue.finishTemplateTag,
+.attributeValue.beginTemplateTag,
+.attributeValue.beginTemplateOpenTag,
+.attributeValue.beginTemplateCloseTag {
+	/* May add that later */
+}
+
+.symbol, .\(, .\), .dot, .name {
+	/* background:#333; */
+}
+
+/* html colors */
+
+.beginComment,
+.finishComment {
+	color:#746D74;
+}
+
+.beginAttributeValue,
+.finishAttributeValue,
+.attributeData,
+.bogusCharRef.attributeValue,
+.bogusCharRef.attributeValueUnquoted,
+.bogusCharRef.attributeValueDoubleQuoted,
+.bogusCharRef.attributeValueSingleQuoted
+ {
+	color: #8F9D6A;
+}
+
+
+.legacyCharRef.attributeValue,
+.namedCharRef.attributeValue,
+.decimalCharRef.attributeValue,
+.hexadecimalCharRef.attributeValue,
+.namedCharRef.attributeValueDoubleQuoted,
+.decimalCharRef.attributeValueDoubleQuoted,
+.hexadecimalCharRef.attributeValueDoubleQuoted,
+.namedCharRef.attributeValueSingleQuoted,
+.decimalCharRef.attributeValueSingleQuoted,
+.hexadecimalCharRef.attributeValueSingleQuoted,
+.namedCharRef.attributeValueUnquoted,
+.decimalCharRef.attributeValueUnquoted,
+.hexadecimalCharRef.attributeValueUnquoted {
+	color: #DDF7AC;
+}
+
+.beginBogusComment,
+.bogusCommentData,
+.finishBogusComment  {
+	color:#746D74;
+}
+
+.finishTag,
+.finishSelfClosingTag,
+.beginStartTag,
+.beginEndTag,
+.tagName {
+	color:#B38243;
+}
+
+.attributeName {
+	color: #D4BD7F;
+}
+
+.legacyCharRef,
+.namedCharRef,
+.decimalCharRef,
+.hexadecimalCharRef {
+	color:#E9784F;
+}
+
+.lessThanSign,
+.bogusCharRef,
+.unescapedAmpersand,
+.unescapedLessThan {
+	background:#60315A;
+}
+
+.endTagPrefix {
+  text-decoration:underline;
+}
+
+
+/* other */
+.key, .diam, .box { color:#7587A6 }
+.true,.false,.null,.value,.number { color:#CF6A4C }
+.comment { color: #746D74 }
+.constructor { color: #B095AE }
