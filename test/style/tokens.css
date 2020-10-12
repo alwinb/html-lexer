@@ -1,17 +1,19 @@
 html, body {
 	color:white;
 	background:#202020;
-	font-family:Helvetica, Arial, Sans;
 }
 
+/** Styles for the tokens **/
+
 pre, code { 
+  font-size:13px;
+	color:white;
+	background:#202020;
 	font-family:Menlo, Monaco, Monospace;
-	font-size:12px;
-	line-height:16px;
 	tab-size:2;
-	padding:1px 4px;
-	margin:0 0 16px 0;
 }
+
+/* Extras */
 
 .error {
 	display:inline-block;
@@ -34,97 +36,49 @@ pre, code {
 	background-color:red;
 }
 
-/* template colors */
+/* html colors */
 
-.beginTemplateComment,
-.finishTemplateComment,
-.emptyComment,
+/* html colors */
+
+.commentStart,
+.commentStartBogus,
 .commentData,
+.commentEnd,
+.commentEndBogus,
 .space {
 	color:#746D74;
 }
 
-.symbol, .name {
-	color:#7587A6;
-}
-
-.finishTemplateTag,
-.beginTemplateTag,
-.beginTemplateOpenTag,
-.beginTemplateCloseTag {
-	background:#333;
-	color:#B095AE;
-}
-
-.attributeValue.finishTemplateTag,
-.attributeValue.beginTemplateTag,
-.attributeValue.beginTemplateOpenTag,
-.attributeValue.beginTemplateCloseTag {
-	/* May add that later */
-}
-
-.symbol, .\(, .\), .dot, .name {
-	/* background:#333; */
-}
-
-/* html colors */
-
-.beginComment,
-.finishComment {
-	color:#746D74;
-}
-
-.beginAttributeValue,
-.finishAttributeValue,
-.attributeData,
-.bogusCharRef.attributeValue,
-.bogusCharRef.attributeValueUnquoted,
-.bogusCharRef.attributeValueDoubleQuoted,
-.bogusCharRef.attributeValueSingleQuoted
- {
+.attributeValueStart,
+.attributeValueData,
+.attributeValueEnd {
 	color: #8F9D6A;
 }
 
-
-.legacyCharRef.attributeValue,
-.namedCharRef.attributeValue,
-.decimalCharRef.attributeValue,
-.hexadecimalCharRef.attributeValue,
-.namedCharRef.attributeValueDoubleQuoted,
-.decimalCharRef.attributeValueDoubleQuoted,
-.hexadecimalCharRef.attributeValueDoubleQuoted,
-.namedCharRef.attributeValueSingleQuoted,
-.decimalCharRef.attributeValueSingleQuoted,
-.hexadecimalCharRef.attributeValueSingleQuoted,
-.namedCharRef.attributeValueUnquoted,
-.decimalCharRef.attributeValueUnquoted,
-.hexadecimalCharRef.attributeValueUnquoted {
+.charRefLegacy,
+.charRefDecimal,
+.charRefHex,
+.charRefNamed {
 	color: #DDF7AC;
 }
 
-.beginBogusComment,
-.bogusCommentData,
-.finishBogusComment  {
-	color:#746D74;
+.charRefDecimal,
+.charRefHex,
+.charRefNamed {
+	/* color:#E9784F; */
 }
 
-.finishTag,
-.finishSelfClosingTag,
-.beginStartTag,
-.beginEndTag,
-.tagName {
+.startTagStart,
+.endTagStart,
+.tagName,
+.tagEnd,
+.tagEndAutoclose {
 	color:#B38243;
 }
 
+.attributeAssign,
 .attributeName {
 	color: #D4BD7F;
-}
-
-.legacyCharRef,
-.namedCharRef,
-.decimalCharRef,
-.hexadecimalCharRef {
-	color:#E9784F;
 }
 
 .lessThanSign,
@@ -139,8 +93,43 @@ pre, code {
 }
 
 
-/* other */
-.key, .diam, .box { color:#7587A6 }
-.true,.false,.null,.value,.number { color:#CF6A4C }
-.comment { color: #746D74 }
-.constructor { color: #B095AE }
+/** Some additional stying for the rest of the sample page **/
+
+html, body {
+	color:#202020;
+	background:white;
+  margin:0; padding:0;
+  font-size:24px;
+}
+
+body {
+	font-family:Helvetica, Arial, Sans;
+  font-size:16px;
+  line-height:1rem;
+}
+
+body {
+  padding:0 1rem;
+}
+h1 {
+  font-size:48px;
+  line-height:2rem;
+  min-height:2rem;
+}
+pre#colors, pre#inspector {
+  display:block;
+  line-height:1rem;
+  padding:.7rem 1rem 1.3rem;
+  border-radius:.3rem;
+}
+
+#colors {
+  cursor:default;
+}
+#colors span {
+  padding:.15rem 0;
+  border-radius:.1rem;
+}
+#colors span:hover {
+  background:#444;
+}

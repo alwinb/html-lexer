@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Html Lexer example page</title>
+  <link rel="stylesheet" type="text/css" href="./style/tokens.css">
+  <script src="../dist/html-lexer.min.js"></script>
+  <script src=./data/samples.js></script>
+</head>
+<body>
+<h1>HTML5 Lexer</h1>
+<p>
+  A test page for html-lexer.
+</p>
+
+
+<div>
+  <pre id=inspector style=white-space:unset>
+    Inspect the output by clicking on it, below
+  </pre>
+  <pre id=colors></pre>
+</div>
+
+<script>
+  const log = console.log.bind (console)
+  const doc = document
+
+  const { Lexer } = modules ['html-lexer']
+
+  function* tokens (str) {
+    lexer.write ('<h1>Hello, World</h1>')
+    lexer.end ()
+  }
+
+  const sString = sym =>
+    /Symbol\((.*)\)/.exec (String(sym))[1] || 'Symbol()'
+  
+  const pre = doc.getElementById ('colors')
+  const pre2 = doc.getElementById ('inspector')
+  const objectKey = Symbol ()
+
+  function inspect (...args) {
+    pre2.innerHTML = ''
+    for (let x of args)
+      pre2.append (JSON.stringify (x, null, 2), doc.createElement ('BR'))
+  }
+
+  function show (data) {
+    const delegate = {
+      write: (token) => {
+        const { state, returnState, position:{ line, column }, tagName, tagType } = lexer
+        const el = renderChunk (token)
+        el [objectKey] = { tokenType:token[0], stateAfter: { state:sString(state), returnState:sString(returnState), tagName, tagType, line, column } }
+        pre.append (el)
+      },
+      end: () => null
+    }
+    const lexer = new Lexer (delegate)
+    lexer.write (data)
+    lexer.end ()
+  }
+
+  function renderChunk ([type, value]) {
+    const e = doc.createElement ('SPAN')
+      e.title = e.className = type
+      let tnode = doc.createTextNode(value)
+      e.append (value)
+      return e
+  }
+
+  function main () {
+    for (let x of sampleData.samples) {
+      show (x)
+      pre.append (doc.createElement ('br'))
+    }
+    for (let x of sampleData.EOFSamples) {
+      show (x)
+      pre.append (doc.createElement ('br'))
+    }
+
+    doc.body.onclick = function (evt) {
+      if (objectKey in evt.target)
+        inspect (evt.target [objectKey])
+    }
+  }
+</script>
+<script>main()</script>
+</body>
+</html>

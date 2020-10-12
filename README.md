@@ -59,13 +59,13 @@ lexer.end ()
 Results in:
 ```
 [ 'data', '' ]
-[ 'beginStartTag', '<' ]
+[ 'startTagStart', '<' ]
 [ 'tagName', 'h1' ]
-[ 'finishTag', '>' ]
+[ 'tagEnd', '>' ]
 [ 'data', 'Hello, World' ]
-[ 'beginEndTag', '</' ]
+[ 'endTagStart', '</' ]
 [ 'tagName', 'h1' ]
-[ 'finishTag', '>' ]
+[ 'tagEnd', '>' ]
 ```
 
 The lexer is incremental: `delegate.write` will be called as soon as a token is available
@@ -83,45 +83,44 @@ lexer.end ()
 Token types
 -----------
 
-The tokens emitted are simple tuples `[type, chunk]`, or
-`[type, chunk, info]`. 
+**Warning** The type names have changed to use a more consistent naming scheme in version 0.4.0. 
 
+The tokens emitted are simple tuples `[type, chunk]`, or `[type, chunk, info]`. 
 The type of a token is just a string, and it is one of:
 
 - `attributeAssign`
-- `attributeData`
 - `attributeName`
-- `beginAttributeValue`
-- `beginBogusComment`
-- `beginComment`
-- `beginEndTag`
-- `beginStartTag`
+- `attributeValueData`
+- `attributeValueEnd`
+- `attributeValueStart`
 - `bogusCharRef`
-- `bogusCommentData`
+- `charRefDecimal`
+- `charRefHex`
+- `charRefLegacy`
+- `charRefNamed`
 - `commentData`
+- `commentEnd`
+- `commentEndBogus`
+- `commentStart`
+- `commentStartBogus`
 - `data`
-- `decimalCharRef`
 - `endTagPrefix`
-- `finishAttributeValue`
-- `finishBogusComment`
-- `finishComment`
-- `finishSelfClosingTag`
-- `finishTag`
-- `hexadecimalCharRef`
-- `legacyCharRef`
+- `endTagStart`
 - `lessThanSign`
-- `namedCharRef`
 - `plaintext`
 - `rawtext`
 - `rcdata`
-- `space`
+- `tagSpace`
+- `startTagStart`
+- `tagEnd`
+- `tagEndAutoclose`
 - `tagName`
 
 The `bogusCharRef` is emitted for sequences that start with an ampersand,
 but that *do not* start a character reference, specifically, one of `"&"`,
 `"&#"`, `"&#X"` or `"&#x"`. 
 
-The `space` is emitted for 'space' between attributes in
+The `tagSpace` is emitted for 'space' between attributes in
 element tags. 
 
 Otherwise the names should be self explanatory.
@@ -143,6 +142,14 @@ Limitations
   This has no dire consequences, other than that html begin and 
   end comment tags that may surround it, are not marked as such. 
 
+
+Changelog
+------------
+
+### 0.4.0
+- **Important** The token types have changed to use a more consistent naming scheme. 
+- Added a Makefile for building a browser version. 
+- Added a browser based test page. 
 
 
 License

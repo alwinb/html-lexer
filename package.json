@@ -1,6 +1,6 @@
 {
   "name": "html-lexer",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "An HTML5 lexer",
   "main": "lib/index.js",
   "scripts": {
@@ -18,9 +18,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/alwinb/html-lexer.git"
-  },
-  "devDependencies": {
-    "tagscript": "^0.3.0"
   },
   "author": "Alwin Blok",
   "license": "MIT",

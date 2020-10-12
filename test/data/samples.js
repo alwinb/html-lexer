@@ -147,7 +147,5 @@ var EOFSamples =
 , 'rawtextEndTagOpen state eof in raw text end tag open <script> asdf </'
 ]
 
-module.exports = 
-{ samples: samples
-, EOFSamples: EOFSamples
-}
+
+const sampleData = { samples, EOFSamples }
