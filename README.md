@@ -14,6 +14,12 @@ An HTML5 lexer for safe template languages
 
 A standard compliant, incremental/ streaming HTML5 lexer. 
 
+**NOTE I am working on a new HTML5 lexer and parser [here][html-parser]. 
+I plan to update this project to use the new lexer relatively soon. 
+I will make sure that a similar API can be used to avoid inconveniences.**
+
+[html-parser]: https://github.com/alwinb/html-parser
+
 This is an HTML5 lexer designed to be used a basis for safe and HTML-context 
 aware template languages, IDEs or syntax highlighters. It is different from the 
 other available tokenizers in that it preserves all the information of the 
