@@ -1,16 +1,10 @@
 An HTML5 lexer for safe template languages
 ==========================================
 
-[![Dependencies][deps-image]][deps-url] 
-[![devDependencies][dev-deps-image]][dev-deps-url] 
-[![NPM version][npm-image]][npm-url] 
+[![NPM version][npm-image]][npm-url]
 
-[npm-image]:      https://img.shields.io/npm/v/html-lexer.svg
-[npm-url]:        https://npmjs.org/package/html-lexer
-[deps-image]:     https://img.shields.io/david/alwinb/html-lexer.svg
-[deps-url]:       https://david-dm.org/alwinb/html-lexer
-[dev-deps-image]: https://img.shields.io/david/dev/alwinb/html-lexer.svg
-[dev-deps-url]:   https://david-dm.org/alwinb/html-lexer?type=dev
+[npm-image]: https://img.shields.io/npm/v/html-lexer.svg
+[npm-url]: https://npmjs.org/package/html-lexer
 
 A standard compliant, incremental/ streaming HTML5 lexer. 
 
