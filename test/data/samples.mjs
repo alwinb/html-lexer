@@ -1,5 +1,4 @@
-
-var samples = 
+const samples = 
 [ 'charref: named &amp; in data'
 , 'charref: named non-terminated &amp in data'
 , 'charref: named non-terminated &ampa in data'
@@ -110,7 +109,7 @@ var samples =
 ]
 
 
-var EOFSamples =
+const EOFSamples =
 [ 'data state eof in da'
 , 'tagOpen state eof in <'
 , 'tagName state eof in <d'
@@ -147,5 +146,88 @@ var EOFSamples =
 , 'rawtextEndTagOpen state eof in raw text end tag open <script> asdf </'
 ]
 
+const samples2 = [
+  '<span a=&amp b>',
+  '<table><input type=hidden type=still-hidden>',
 
-const sampleData = { samples, EOFSamples }
+  // '</ tttt>',
+  // '<table><input type = hidden  ///  /  type= still-hidden&amp;foo >foo',
+  // '<script type=hidden ///type=still-hidden&amp;foo >foo</x>bae',
+  // '<!doctype script type = hidden ///type= still-hidden&amp;foo >foo</x>bae',
+  // '<!--> <!---> <!-----> bae',
+  // `<test val = unq&amped bar="foo" bee='buzz'> bae`,
+  // `<plaintext = unq&amped bar="foo" bee='buzz'> baeasas </plaintext > `,
+  // `<test val = unq&amped b   //   >`,
+
+  '<script a   =\n  b>foo bar </script>',
+  '<h1>Hello, World</h1>',
+  '<!namas >',
+  '<foo/>',
+
+  // Newlines
+  // --------
+
+  // Newlines in data
+  `Test &amp; Line1\nLine2\r\rLine4\r\nLine5`,
+  `Test &amp; Line1 \nLine2 \r\r Line4 \r\nLine5`,
+
+  // Newlines in rcdata
+  `<textarea>Test &amp; Line1\nLine2\r\rLine4\r\nLine5`,
+  `<textarea>Test &amp; Line1<\nLine2<\r\rLine4<\r\nLine5`,
+  `<textarea>Test &amp; Line1</\nLine2</\r\rLine4</\r\nLine5`,
+
+  // Newlines in attribute values
+  `<div title="Test &amp; Line1\nLine2\r\rLine4\r\nLine5" foo >`,
+  `<div title='Test &amp; Line1\nLine2\r\rLine4\r\nLine5' foo >`,
+  `<div title="Test &amp; Line1 \nLine2 \r\rLine4 \r\nLine5" foo >`,
+  `<div title='Test &amp; Line1 \nLine2 \r\rLine4 \r\nLine5' foo >`,
+
+
+  // Newlines in rawtext
+  `<style>Test &amp; Line1\nLine2\r\rLine4\r\nLine5`,
+  `<style>Test &amp; Line1<\nLine2<\r\rLine4<\r\nLine5`,
+  `<style>Test &amp; Line1</\nLine2</\r\rLine4</\r\nLine5`,
+
+  // Newlines in comments
+  `<!-- Test &amp; Line1\nLine2\r\rLine4\r\nLine5`,
+  `<!? Test &amp; Line1\nLine2\r\rLine4\r\nLine5`,
+
+  // No newlines in plaintext then
+  `<plaintext>Test &amp; Line1\nLine2\r\rLine4\r\nLine5`,
+  
+  // NUL
+  // ---
+
+  // NULs in data
+  `Test &amp; Line1\0Line2\0\0Line4\0\0Line5`,
+  `Test &amp; Line1 \0Line2 \0\0 Line4 \0\0Line5`,
+
+  // NULs in rcdata
+  `<textarea>Test &amp; Line1\0Line2\0\0Line4\0\0Line5`,
+  `<textarea>Test &amp; Line1<\0Line2<\0\0Line4<\0\0Line5`,
+  `<textarea>Test &amp; Line1</\0Line2</\0\0Line4</\0\0Line5`,
+
+  // NULs in attribute values
+  `<div title="Test &amp; Line1\0Line2\0\0Line4\0\0Line5" foo >`,
+  `<div title='Test &amp; Line1\0Line2\0\0Line4\0\0Line5' foo >`,
+  `<div title=Line1\0Line2\0\0Line4\0\0Line5 foo >`,
+
+  // NULs in rawtext
+  `<style>Test &amp; Line1\0Line2\0\0Line4\0\0Line5`,
+  `<style>Test &amp; Line1<\0Line2<\0\0Line4<\0\0Line5`,
+  `<style>Test &amp; Line1</\0Line2</\0\0Line4</\0\0Line5`,
+
+  // NULs in comments
+  `<!-- Test &amp; Line1\0Line2\0\0Line4\0\0Line5`,
+  `<!? Test &amp; Line1\0Line2\0\0Line4\0\0Line5`,
+
+  // No NULs in plaintext then
+  `<plaintext>Test &amp; Line1\0Line2\0\0Line4\0\0Line5`,
+
+
+]
+
+
+// Exports
+// -------
+export { samples, samples2, EOFSamples }

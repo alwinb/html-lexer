@@ -1,4 +1,5 @@
-const Lexer = require ('../lib')
+import { Lexer } from 'html-lexer'
+const log = console.log.bind (console)
 
 const delegate = {
   write: (token) => console.log (token),
@@ -20,9 +21,6 @@ const delegate = {
 }
 
 {
-  // OK this works, but it is not accurate;
-  // this queries the lexer state; not the token boundaries. 
-
   let lexer
   const delegate = {
     write: (token) => console.log (token, lexer.position),
@@ -46,6 +44,5 @@ const delegate = {
   lexer.write ('\nI said: I am &not')
   lexer.end ('<!asd')
 }
-
 
 
