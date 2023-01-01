@@ -149,4 +149,5 @@ Changelog
 License
 -------
 
-MIT. Go for it. 
+The source code for this project is licensed under the _Mozilla Public License Version 2.0_, copyright Alwin Blok 2016–2018, 2020–2021, 2023.
+
