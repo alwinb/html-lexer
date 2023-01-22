@@ -31,7 +31,7 @@ Usage
 The produced tokens are simply tuples (arrays) `[type, chunk]` of a token type
 and a chunk of the input string.
 
-The lexer has a 'push parser' API.
+The lexer has a ‘push parser’ API.
 The `Lexer` constructor takes as its single argument a delegate object with 
 methods: `write (token)` and `end ()`.
 
