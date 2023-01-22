@@ -7,7 +7,6 @@ const log = console.log.bind (console)
 // ==========
 
 // TODO: Doctypes, CDATA, Plaintext, ...
-// And legacy charRefs
 // and clean up the produced token tags
 
 

@@ -100,6 +100,7 @@ The type of a token is just a string, and it is one of:
 - `data`
 - `endTagStart`
 - `lessThanSign`
+- `uncodedAmpersand`
 - `newline`
 - `nulls`
 - `plaintext`
@@ -112,7 +113,7 @@ The type of a token is just a string, and it is one of:
 - `tagName`
 - `tagSpace`
 
-The `ampersand` is emitted for ampersand `&` characters that *do not* start a character reference. 
+The `uncodedAmpersand` is emitted for ampersand `&` characters that *do not* start a character reference. 
 
 The `tagSpace` is emitted for 'space' between attributes in
 element tags. 
@@ -151,7 +152,7 @@ inspired by the techniques described by [Sean Barrett] on their page about
 
 - **NB** Small changes have been made to the token types:
 - The `endTagPrefix` token has been removed: an `rcdata` or `rawtext` token is emitted instead.
-- The `bogusCharRef` token has been removed: an `ampersand` token is emitted for an ampersand `&` that *does not start a character reference* instead.
+- The `bogusCharRef` token has been removed: an `uncodedAmpersand` token is emitted for an ampersand `&` that *does not start a character reference* instead.
 - Stretches of NUL-characters, whitespace, and individual newlines are now emitted as separate tokens of type `nulls`, `space`, and `newline`, respectively.
 
 

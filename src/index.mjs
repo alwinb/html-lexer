@@ -9,12 +9,13 @@ const { eqClass, defaultClass, tokens:T, states:S, initialState, table, minAccep
 const FAIL = 0
 const errorToken = 0
 
+
 // TokenTypes
 // ----------
 
-// This maps the DFA tokenTypes to strings;
-// It renames some of the token-types to maintain 
-// some compatibility with previous versions of html-lexer.
+// This maps the DFA tokenTypes from ints to strings;
+// It renames some of the token-types to maintain some
+// compatibility with previous versions of html-lexer.
 
 const names = []
 for (const k in T) names[T[k]] = k
@@ -29,16 +30,12 @@ names [T.bogusStart]     = 'commentStartBogus'
 names [T.bogusData]      = 'commentData'
 names [T.bogusEnd]       = 'commentEndBogus'
 names [T.lt]             = 'lessThanSign'
-names [T.ampersand]      = 'ampersand'
-
-// TODO
-// - split charRefs
+names [T.ampersand]      = 'uncodedAmpersand'
 
 const tokenTypes = {}
 for (const x of names) tokenTypes[x] = x
 delete tokenTypes.errorToken
 delete tokenTypes.mDeclStart
-// log (tokenTypes)
 
 
 // Lexer / Push Parser
@@ -99,7 +96,7 @@ function Lexer (delegate) {
     delegate.end ()
   }
 
-  // private
+  // Private methods
 
   function getPosition () {
     return { line, column: pos-lastnl }
@@ -108,6 +105,7 @@ function Lexer (delegate) {
   function emit (type, anchor_, end_) {
     // log ('emit', {buffer, l:buffer.length, anchor_, end_, closed })
     switch (type) {
+
       case errorToken: {
         const message = `Lexer error at line ${line}:${pos-lastnl}`
         throw new SyntaxError (message)
@@ -128,32 +126,34 @@ function Lexer (delegate) {
         lastTagType = type
         if (entry === S.Main || lastStartTagName === tagName.toLowerCase ())
           entry = S.BeforeAttribute
-        else type = entry === S.RcData ? T.rcdata : T.rawtext
+        else entry === S.RcData ? T.rcdata : T.rawtext
         delegate.write (['endTagStart', '</'])
         delegate.write (['tagName', tagName])
         return anchor = pos = end_ // NB returns
       }
 
-      case T.mDeclStart:
+      case T.mDeclStart: {
         entry = S.Bogus;
         delegate.write ([names[T.bogusStart], '<!'])
         delegate.write ([names[T.bogusData], buffer.substring (anchor+2, end_)])
-        anchor = pos = end_
-      return
+        return anchor = pos = end_ // NB returns
+      }
 
       case T.tagEnd: {
-        const xmlIsh = false // needs the feedback
+        const xmlIsh = false // needs the feedback // TODO support SVG / MathML
         entry = lastTagType === T.startTagStart && !xmlIsh ? contentMap [lastStartTagName] || S.Main : S.Main
-        if (end_ - anchor > 1) { // Mark as autoclose
-          delegate.write (['tagEndAutoclose', buffer.substring (anchor, end_)])
-          return anchor = pos = end_ // NB returns
-        }
+        const ttype = buffer[end_ - 2] === '/' ? 'tagEndAutoclose' : 'tagEnd'
+        delegate.write ([ttype, buffer.substring (anchor, end_)])
+        return anchor = pos = end_ // NB returns
       }
-      break
 
       case T.charRefNamed:
-        // TODO split it
-      break
+      case T.charRefLegacy: {
+        const nextChar = buffer[end_]  // FIXME case at buffer end ? need to back up...
+        const parts = splitCharRef (buffer.substring (anchor, end_), entry, nextChar)
+        for (const item of parts) delegate.write (item)
+        return anchor = pos = end_ // NB returns
+      }
 
       case T.attributeSep:    entry = S.BeforeAttribute;   break
       case T.attributeName:   entry = S.BeforeAssign;      break
@@ -203,40 +203,49 @@ const contentMap = {
 // `LEGACY` and `PREFIXED` result from preprocessing the table of all
 // entity names in the HTML5 specification, specifically, by selecting
 // 1. The names that may occur without a terminating semicolon.
-// 2. Semicolon terminated names that have a special as a prefix.
+// 2. Semicolon terminated names that have a legacy name as a prefix.
 
-const LEGACY = /^&([AEIOUYaeiouy]?acute|[AEIOUaeiou](?:grave|circ|uml)|y?uml|[ANOano]tilde|[Aa]ring|[Oo]slash|[Cc]?cedil|brvbar|curren|divide|frac(?:12|14|34)|iquest|middot|plusmn|(?:AE|ae|sz)lig|[lr]aquo|iexcl|micro|pound|THORN|thorn|times|COPY|copy|cent|macr|nbsp|ord[fm]|para|QUOT|quot|sect|sup[123]|AMP|amp|ETH|eth|REG|reg|deg|not|shy|yen|GT|gt|LT|lt)(;|.*)/
-const PREFIXED = /^&(?:copysr|centerdot|divideontimes|[gl]t(?:quest|dot|cir|cc)|[gl]trPar|gtr(?:dot|less|eqqless|eqless|approx|arr|sim)|ltr(?:i|if|ie|mes)|ltlarr|lthree|notin(?:dot|E|v[abc])?|notni(?:v[abc])?|parallel|times(?:bar|d|b));/
+const LEGACY = /^&([AEIOUYaeiouy]?acute|[AEIOUaeiou](?:grave|circ|uml)|y?uml|[ANOano]tilde|[Aa]ring|[Oo]slash|[Cc]?cedil|brvbar|curren|divide|frac(?:12|14|34)|iquest|middot|plusmn|(?:AE|ae|sz)lig|[lr]aquo|iexcl|micro|pound|THORN|thorn|times|COPY|copy|cent|macr|nbsp|ord[fm]|para|QUOT|quot|sect|sup[123]|AMP|amp|ETH|eth|REG|reg|deg|not|shy|yen|GT|gt|LT|lt)(;|.*)$/
+const PREFIXED = /^&(?:copysr|centerdot|divideontimes|[gl]t(?:quest|dot|cir|cc)|[gl]trPar|gtr(?:dot|less|eqqless|eqless|approx|arr|sim)|ltr(?:i|if|ie|mes)|ltlarr|lthree|notin(?:dot|E|v[abc])?|notni(?:v[abc])?|parallel|times(?:bar|d|b));$/
 
-function splitCharRef (string, inAttribute, nextChar) {
+function splitCharRef (string, entry, nextChar) {
 
   // A semicolon-terminated, known charref
   if (PREFIXED.test (string))
-    return [[T.charRefNamed, string]]
+    return [['charRefNamed', string]]
 
   // Test legacy charrefs (terminated or nonterminated)
-  var r = LEGACY.exec (string)
-  var terminated = string[string.length-1] === ';'
+  const r = LEGACY.exec (string)
+  const terminated = string[string.length-1] === ';'
+
+  const dataTokenType
+    = entry === S.Main   ? 'data'
+    : entry === S.RcData ? 'rcdata' : 'attributeValueData'
 
   // Not a special charref, nor one with trailing alphanums
-  if (!r) return (terminated // TODO check this
-      ? [[T.charRefNamed, string]]
-      : [[inAttribute ? T.attributeValueData : 'data', string]])
+  if (!r) return (terminated
+      ? [['charRefNamed', string]]
+      : [[dataTokenType, string]])
 
   // A semicolon terminated legacy charref
   if (r[2] === ';')
-    return [[T.charRefNamed, '&'+r[1]+';']]
+    return [['charRefNamed', '&'+r[1]+';']]
 
+  const inAttribute
+    =  entry === S.BeforeValue
+    || entry === S.ValueQuoted
+    || entry === S.ValueAposed
+    || entry === S.ValueUnquoted
   // A nonterminated legacy charref (exact match)
   if (r[2] === '')
     return (!inAttribute || nextChar !== '=')
-      ? [[T.charRefLegacy, string]] // And also a parse error
-      : [[T.attributeValueData, string]]
+      ? [['charRefLegacy', string]] // And also a parse error
+      : [[dataTokenType, string]]
 
   // A nonterminated legacy charref with trailing alphanums
   else return (!inAttribute)
-    ? [[T.charRefLegacy, '&'+r[1]], ['data', r[2]]]
-    : [[T.attributeValueData, string]]
+    ? [['charRefLegacy', '&'+r[1]], [dataTokenType, r[2]]]
+    : [[dataTokenType, string]]
 }
 
 

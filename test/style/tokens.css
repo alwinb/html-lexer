@@ -82,10 +82,7 @@ pre, code {
 }
 
 .lessThanSign,
-.ampersand,
-.bogusCharRef,
-.unescapedAmpersand,
-.unescapedLessThan {
+.uncodedAmpersand {
 	background:#60315A;
 }
 

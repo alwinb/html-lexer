@@ -1,5 +1,39 @@
 const samples = 
-[ 'charref: named &amp; in data'
+[ '\n'
+, '<h2>Legacy Named Character References</h2>'
+, '<xmp title=&amp      >&amp</xmp>      <span>&amp</span>'
+, '<xmp title=&amp;     >&amp;</xmp>     <span>&amp;</span>'
+, '<xmp title=&ampo     >&ampo</xmp>     <span>&ampo</span>'
+, '<xmp title=&amp*     >&amp*</xmp>     <span>&amp*</span>'
+, '<xmp title="&amp "   >&amp </xmp>     <span>&amp </span>'
+, '<xmp title=&amp=     >&amp=</xmp>     <span>&amp=</span>'
+, '<xmp title=&notin    >&notin</xmp>    <span>&notin</span>'
+, '<xmp title=&notit    >&notit</xmp>    <span>&notit</span>'
+, '<xmp title=&notina   >&notina</xmp>   <span>&notina</span>'
+, '<xmp title=&notita   >&notita</xmp>   <span>&notita</span>'
+, '<xmp title=&notin;   >&notin;</xmp>   <span>&notin;</span>'
+, '<xmp title=&notit;   >&notit;</xmp>   <span>&notit;</span>'
+, '<xmp title=&notin;a  >&notin;a</xmp>  <span>&notin;a</span>'
+, '<xmp title=&notit;a  >&notit;a</xmp>  <span>&notit;a</span>'
+, '<xmp title=&notin=   >&notin=</xmp>   <span>&notin=</span>'
+, '<xmp title=&notit=   >&notit=</xmp>   <span>&notit=</span>'
+, '<xmp title=&notin;=  >&notin;=</xmp>  <span>&notin;=</span>'
+, '<xmp title=&notit;=  >&notit;=</xmp>  <span>&notit;=</span>' // REVIEW (&notit; is not a named charref; but neither is &foo;)
+, '<xmp title=&foo;=    >&foo;=</xmp>    <span>&foo;=</span>'
+, '<xmp title=&foo;     >&foo;</xmp>     <span>&foo;</span>'
+, '<a href="/foo&amp=a&amp&notin&notit&amp;&notin;&notit;">Link</a>'
+
+, '\n'
+, '<h2>Legacy character references in rcdata</h2>'
+, `<textarea>Test &ampfoo`
+, `<textarea>Test &notit;foo`
+, `<textarea>Test &notin;foo`
+
+, '\n'
+, '<h2>Named Character References</h2>'
+, 'charref: uncoded ampersand & in data'
+, 'charref: <span title="uncoded ampersand & in attribute">'
+, 'charref: named &amp; in data'
 , 'charref: named non-terminated &amp in data'
 , 'charref: named non-terminated &ampa in data'
 , 'charref: hexadecimal &#xccc; in data'
@@ -30,7 +64,7 @@ const samples =
 , 'charref: bogus <input value=you&x ampme /> in attribute'
 , 'charref: ampHash &amp;# such'
 
-, ''
+, '\n'
 , 'rcdata <textarea> asdf & &amp; <textareaNot </textarea> and more'
 , 'rcdata2 <textarea> asdf & &amp; </textarea( and not ending> it'
 , 'rcdata3 <textarea> asdf & &amp; </textarea/ and ending> it, see <span>yes</span>'
@@ -46,7 +80,7 @@ const samples =
 , 'bad end tag <div style=color:blue> This is blue </ div> And this too!'
 , 'closePlaintext hi <plaintext>asd<as &ap, </plaintext> cannot be ended'
 
-, ''
+, '\n'
 , 'comment: <!weird markup declaration> and such'
 , 'comment: <!> and such'
 , 'comment: <?> and such'
@@ -71,7 +105,12 @@ const samples =
 , 'bogus comment: <? with end !@> and subsequent data'
 , 'bogus comment: <!- with end -> and subsequent data'
 
-, ''
+, '\n'
+, '<!doctype foo>'
+, `<!ba>`
+, `<! xos >`
+
+, '\n'
 , 'missing space attribues connected <div name="a"name="b" >'
 , 'nonalpha attribute weird template tag <div {name="a" name="b" >'
 , 'normalHtml This is <span class = "s1">html</span> Yeah!'
@@ -80,7 +119,7 @@ const samples =
 , 'unescaped ampersand HashEx data &#x such'
 , 'unescaped ampersand HashExZed data &#xz such'
 
-, ''
+, '\n'
 , 'slashes: <span/>'
 , 'slashes: <span name=foo//>'
 , 'slashes: <div//>'
@@ -98,6 +137,7 @@ const samples =
 , 'slashes: <span name=// />asdf'
 , 'slashes: <span name= / />asdf'
 
+, '\n'
 , 'weirdEquals <span attr = / asd >content</span>'
 , 'weirdEquals2 <span attr = @ asd >content</span>'
 , 'weirdEquals3 <span attr /= asd >content</span>'
@@ -181,7 +221,6 @@ const samples2 = [
   `<div title='Test &amp; Line1\nLine2\r\rLine4\r\nLine5' foo >`,
   `<div title="Test &amp; Line1 \nLine2 \r\rLine4 \r\nLine5" foo >`,
   `<div title='Test &amp; Line1 \nLine2 \r\rLine4 \r\nLine5' foo >`,
-
 
   // Newlines in rawtext
   `<style>Test &amp; Line1\nLine2\r\rLine4\r\nLine5`,
