@@ -49,11 +49,9 @@ const eqClass = (() => {
   // Precompute a lookup table
 
   const eq_array = new Uint8Array (0x7F);
-  const table = []
   for (let i=0, l=0x7F; i<=l; i++)
-    table [i] = eqClassFn (i)
-
-  return table
+    eq_array [i] = eqClassFn (i)
+  return eq_array
 }) ()
 
 
