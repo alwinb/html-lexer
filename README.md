@@ -140,12 +140,14 @@ Limitations
 Changelog
 ------------
 
-### 0.5.0 - The DFA
+### 0.5.0
 
-The projet has been rewritten to use a fast, hand-written DFA-based lexer,
-inspired by the techniques described by [Sean Barrett] on their page about
-[table-driven lexical analyis].
+The projet has been rewritten to use the fast, hand-written DFA-based lexer,
+from my related [html-parser] project. 
+I have been inspired by the techniques described by [Sean Barrett] on their
+page about [table-driven lexical analyis].
 
+[html-parser]: https://github.com/alwinb/html-parser
 [Sean Barrett]: http://nothings.org
 [table-driven lexical analyis]: https://nothings.org/computer/lexing.html
 
