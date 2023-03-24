@@ -31,9 +31,9 @@ Usage
 The produced tokens are simply tuples (arrays) `[type, chunk]` of a token type
 and a chunk of the input string.
 
-The lexer has a 'push parser' API. 
+The lexer has a ‘push parser’ API.
 The `Lexer` constructor takes as its single argument a delegate object with 
-methods: `write (token)` and `end ()`. 
+methods: `write (token)` and `end ()`.
 
 Example:
 
@@ -51,19 +51,21 @@ lexer.end ()
 ```
 
 Results in:
-```
-[ 'data', '' ]
+
+```javascript
 [ 'startTagStart', '<' ]
 [ 'tagName', 'h1' ]
 [ 'tagEnd', '>' ]
-[ 'data', 'Hello, World' ]
+[ 'data', 'Hello,' ]
+[ 'space', ' ' ]
+[ 'data', 'World' ]
 [ 'endTagStart', '</' ]
 [ 'tagName', 'h1' ]
 [ 'tagEnd', '>' ]
 ```
 
-The lexer is incremental: `delegate.write` will be called as soon as a token is available
-and you can split the input across multiple writes:
+The lexer is incremental: `delegate.write` will be called as soon as a token is
+available and you can split the input across multiple writes:
 
 ```javascript
 const lexer = new Lexer (delegate)
@@ -77,9 +79,7 @@ lexer.end ()
 Token types
 -----------
 
-**Warning** The type names have changed to use a more consistent naming scheme in version 0.4.0. 
-
-The tokens emitted are simple tuples `[type, chunk]`, or `[type, chunk, info]`. 
+The tokens emitted are simple tuples `[type, chunk]`.
 The type of a token is just a string, and it is one of:
 
 - `attributeAssign`
@@ -93,26 +93,27 @@ The type of a token is just a string, and it is one of:
 - `charRefLegacy`
 - `charRefNamed`
 - `commentData`
-- `commentEnd`
 - `commentEndBogus`
-- `commentStart`
+- `commentEnd`
 - `commentStartBogus`
+- `commentStart`
 - `data`
-- `endTagPrefix`
 - `endTagStart`
 - `lessThanSign`
+- `uncodedAmpersand`
+- `newline`
+- `nulls`
 - `plaintext`
 - `rawtext`
 - `rcdata`
-- `tagSpace`
+- `space`
 - `startTagStart`
-- `tagEnd`
 - `tagEndAutoclose`
+- `tagEnd`
 - `tagName`
+- `tagSpace`
 
-The `bogusCharRef` is emitted for sequences that start with an ampersand,
-but that *do not* start a character reference, specifically, one of `"&"`,
-`"&#"`, `"&#X"` or `"&#x"`. 
+The `uncodedAmpersand` is emitted for ampersand `&` characters that *do not* start a character reference. 
 
 The `tagSpace` is emitted for 'space' between attributes in
 element tags. 
@@ -124,8 +125,7 @@ Limitations
 -----------
 
 * Doctype  
-  The doctype states are not implemented.  
-  The lexer interprets doctypes as 'bogus comments'. 
+  The lexer still interprets doctypes as 'bogus comments'. 
 
 * CDATA  
   The lexer interprets CDATA sections as 'bogus comments'.  
@@ -140,8 +140,27 @@ Limitations
 Changelog
 ------------
 
+### 0.5.0
+
+The projet has been rewritten to use the fast, hand-written DFA-based lexer,
+from my related [html-parser] project. 
+I have been inspired by the techniques described by [Sean Barrett] on their
+page about [table-driven lexical analyis].
+
+[html-parser]: https://github.com/alwinb/html-parser
+[Sean Barrett]: http://nothings.org
+[table-driven lexical analyis]: https://nothings.org/computer/lexing.html
+
+
+- **NB** Small changes have been made to the token types:
+- The `endTagPrefix` token has been removed: an `rcdata` or `rawtext` token is emitted instead.
+- The `bogusCharRef` token has been removed: an `uncodedAmpersand` token is emitted for an ampersand `&` that *does not start a character reference* instead.
+- Stretches of NUL-characters, whitespace, and individual newlines are now emitted as separate tokens of type `nulls`, `space`, and `newline`, respectively.
+
+
 ### 0.4.0
-- **Important** The token types have changed to use a more consistent naming scheme. 
+
+- **NB** The token types have changed to use a more consistent naming scheme. 
 - Added a Makefile for building a browser version. 
 - Added a browser based test page. 
 
@@ -149,4 +168,5 @@ Changelog
 License
 -------
 
-MIT. Go for it. 
+The source code for this project is licensed under the _Mozilla Public License Version 2.0_, copyright Alwin Blok 2016–2018, 2020–2021, 2023.
+

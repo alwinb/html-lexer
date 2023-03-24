@@ -1,10 +1,19 @@
 {
   "name": "html-lexer",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "An HTML5 lexer",
-  "main": "lib/index.js",
+  "main": "dist/html-lexer.js",
+  "module": "dist/html-lexer.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "exports": {
+    ".": [
+      {
+        "import": "./dist/html-lexer.mjs",
+        "require": "./dist/html-lexer.js"
+      }
+    ]
   },
   "keywords": [
     "html5",
@@ -13,7 +22,13 @@
     "lexer",
     "tokeniser",
     "tokenizer",
-    "parser"
+    "parser",
+    "start-tag",
+    "end-tag",
+    "element",
+    "attribute",
+    "attribute-name",
+    "attribute-value"
   ],
   "repository": {
     "type": "git",

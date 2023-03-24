@@ -1,16 +1,20 @@
 .PHONY: all clean
 
-files = browser.js index.js lexer.js tokens.js
-sources = $(addprefix lib/, $(files))
+files = index.mjs dfa.mjs
+sources = $(addprefix src/, $(files))
 
 #run: all
 #	@ echo $(sources)
 
-all: dist/html-lexer.min.js
+all: dist/html-lexer.mjs dist/html-lexer.js
 
-dist/html-lexer.min.js: dist/ $(sources)
-	@ echo "Making a minified browser bundle"
-	@ browserify lib/browser.js | terser -cm > dist/html-lexer.min.js
+dist/html-lexer.mjs: dist/ $(sources) Makefile
+	@ echo "Making an ESModule"
+	@ esbuild --bundle --minify --keep-names --format=esm src/index.mjs > dist/html-lexer.mjs
+
+dist/html-lexer.js: dist/ $(sources) Makefile
+	@ echo "Making an CommonJS bundle"
+	@ esbuild --bundle --minify --keep-names --platform=node src/index.mjs > dist/html-lexer.js
 
 dist/:
 	@ mkdir dist/

@@ -4,8 +4,6 @@
   <meta charset="utf-8">
   <title>Html Lexer example page</title>
   <link rel="stylesheet" type="text/css" href="./style/tokens.css">
-  <script src="../dist/html-lexer.min.js"></script>
-  <script src=./data/samples.js></script>
 </head>
 <body>
 <h1>HTML5 Lexer</h1>
@@ -21,11 +19,14 @@
   <pre id=colors></pre>
 </div>
 
-<script>
+<script type=module>
+
+  import { Lexer } from '../src/index.mjs'
+  import * as sampleData from './data/samples.mjs'
+
   const log = console.log.bind (console)
   const doc = document
 
-  const { Lexer } = modules ['html-lexer']
 
   function* tokens (str) {
     lexer.write ('<h1>Hello, World</h1>')
@@ -48,9 +49,9 @@
   function show (data) {
     const delegate = {
       write: (token) => {
-        const { state, returnState, position:{ line, column }, tagName, tagType } = lexer
+        const { position } = lexer
         const el = renderChunk (token)
-        el [objectKey] = { tokenType:token[0], stateAfter: { state:sString(state), returnState:sString(returnState), tagName, tagType, line, column } }
+        el [objectKey] = { tokenType:token[0], stateAfter:position }
         pre.append (el)
       },
       end: () => null
@@ -83,7 +84,8 @@
         inspect (evt.target [objectKey])
     }
   }
+
+  main ()
 </script>
-<script>main()</script>
 </body>
 </html>
